@@ -1,1 +1,130 @@
 SELECT * FROM tflecommerce.shipment_items;
+
+
+
+
+
+
+Let us learn Transaction in Database...
+Data Centric Application:
+
+	 Focus is more on Data:
+
+		DDL, DML, SQL
+		simple queries, nested queries
+		Joins: inner join, left join, right join,
+		       self join
+
+		Function: inbuilt functions
+			  user defined functions
+		Stored Procedures:
+				What is stored procedure
+				How to write simple stored procedure
+				Paramters for stored procedure: IN, OUT
+		Data Integrity:
+		Transaction:
+
+			is a sequence of one or more SQL Operations , that is to be treated 
+			as single unit of work
+			
+			word:
+				commit
+				rollback
+			
+	Transaction:
+
+	 Key properties of transactions are described by  ACID principles:
+
+	A: Atomicity:
+		Ensures that all operations within the transaction are completed successfully;
+		it not, the transaction is rolled back:
+
+	C: Consistency:
+		 Guarantees that a transaction will bring the database from one valid state to another, 
+		 maintaining all predefined rules (like constraints and triggers).
+		
+
+	I: Isolation
+		Ensures that transactions are executed in isolation from one another. 
+		The changes made in one transaction are not visible to other transactions 
+			until the transaction is committed.
+
+
+	D: Durability
+		Once a transaction has been committed, 
+		the changes are permanent, 
+		even in the event of a system failure.
+		
+
+
+  Example of Transaction:
+		Banking Domain Point of view:
+				Funds Transfer ------Transaction:
+				Operation:
+					A.withdraw amount from one bank account
+					B.deposit amount into another bank account
+
+					
+
+		
+		ECommerce Domain Point of view:
+
+			Transaction:  Order Placement:
+			Operations:
+				   When a customer places an order, several steps needed to be performed automatically:
+
+				A.Deduct the inventory  for the pruchased items  (products)
+				B.Create an order record in orders table.	 (orders)
+				C.Charge the customers payment method.		 (payments)
+
+				START TRANSACTION;
+
+				-- Deduct inventory
+				UPDATE products SET stock = stock - 1 WHERE product_id = 123;
+
+				-- Create order
+				INSERT INTO orders (user_id, product_id, order_date, status) VALUES (1, 123, NOW(), 'Pending');
+
+				-- Charge payment
+				INSERT INTO payments (order_id, amount, payment_date) VALUES (LAST_INSERT_ID(), 50.00, NOW());
+
+				COMMIT;
+
+
+			Transaction:   Refund Process
+			Operations:
+
+				A.Update the order status to "Refunded."  (orders)
+				B.Restore the product stock.		(products)
+				C.Process the refund payment.		(refunds)
+
+
+			START TRANSACTION	
+				UPDATE orders SET status = 'Refunded' WHERE order_id = 456;
+				UPDATE products SET stock = stock + 1 WHERE product_id = (SELECT product_id FROM orders WHERE order_id = 456);
+				INSERT INTO refunds (order_id, amount, refund_date) VALUES (456, 50.00, NOW());
+			COMMIT;
+
+
+
+
+  Banking Domain Point of view :
+
+	Possible List of Transactions could be identified:
+
+		
+		1.Funds Transfer Between Accounts
+
+			A.Deduct the amount from the sender's account.
+			B.Add the amount to the receiver's account.
+
+
+		2. Deposit Funds into an Account
+			A.Increase the account balance.
+			B.Record the transaction for audit purposes.
+
+
+		3. Withdrawal from an Account
+			A.Check the account balance.
+			B.Deduct the amount from the account.
+			C.Record the transaction.
