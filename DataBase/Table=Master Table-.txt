@@ -1,0 +1,147 @@
+Table=Master Table- 
+1)User
+2)Categories
+3)Shipping_method.
+4)Discount_codes.
+
+
+Dependent Table=
+Product,order,Order_Status,refunds,Order_fulfillments,
+Payment,Inventory,purchase_order,product_audit, 
+discount_codes.order_discount,order_item
+price_changes,reviews
+cart,cart_items,
+shipments,shipment_items,Shipping_Address.
+Subscriptions,
+loyality_redemptions
+Biling_adjusment
+returns
+
+User-user-reviews,
+          User-cart,
+          User-Subscription,
+          User-loyalty_redemptions,
+          User-Billing_adjusment,
+          User-Order.
+
+
+Categories-Categories-product,
+           
+Shipping_method-Shipping_method-Shipments,
+            
+Discount_codes=Discount_codes-order-Discounts.
+
+Shipments-Shipments-items
+          Shipments-method.
+ 
+inventory-inventory-product
+          inventory-product_audit
+  
+product-product-categories
+        product-refund
+        product-purchase_orders
+        product-reviews
+        product-returns
+        product-price_changes
+        product-Order_items
+        product-cart_items
+        product-shipment_items
+
+Order=order-shipping_addresses
+      order-order_status
+      order-order_discount
+      order-Order_fulfillment
+      order-order_items
+      order-shipment
+      order-payment
+      order-returns
+      order-refunds
+
+cart=cart-customer
+     cart-cart_items
+       
+   What is  Join ?
+a join is an operation 
+that combines rows from one or more tables are based 
+a releated column between them  (PK--FK)
+ 
+joins are essential for retriveing data from multiple tables 
+in relational database.
+Different types of joins:
+INNER  JOIN
+Description:
+	Returns  only rows  that have matching values in both tables
+Use case:
+	When  you want to retriever recrods  that exist in both tables
+ 
+Example:
+if you have a customers table and orders tables,
+an INNERT join will return only customers who have placed orders
+LEFT JOIN
+Description:
+	 Returns all rows from the left table 
+     and the matched rows from the right table. 
+	 If there’s no match, NULL values are returned for columns from the right table.
+ 
+use Case:
+	Useful when you want to see all records from one table 
+	the related records from another table, if they exist.
+	  Left					  right
+     Customers Table    ------ Orders Tables
+Example:
+	 List all customers and their orders,
+     including customers who have not placed any orders 
+     (they will show with NULL for order details).
+ 
+RIGHT JOIN
+ 
+Description: Returns all rows from the right table
+			  and the matched rows from the left table.
+               If there’s no match, 
+               NULL values are returned for columns from the left table.
+Use Case:
+			Similar to LEFT JOIN, but it focuses on the right table.
+Example:
+			List all orders and the corresponding customers,
+			including orders that don’t have associated customers.
+ 
+Customers Table
+	CustomerID	CustomerName	ContactName
+	1			John Doe		John
+	2			Jane Smith		Jane
+	3			Mike Johnson	Mike
+ 
+Orders Table
+	OrderID		CustomerID		OrderDate
+	101			1				2024-01-10
+	102			1				2024-01-15
+	103			2				2024-02-01
+    104			4				2024-03-15
+ 
+"To retrieve all customers along with their orders (if any)"
+SELECT  Customers.CustomerID, Customers.CustomerName, Orders.OrderID, Orders.OrderDate
+FROM  Customers  
+LEFT JOIN  Orders ON  Customers.CustomerID = Orders.CustomerID;
+ 
+Output
+ 
+CustomerID	CustomerName	OrderID		OrderDate
+1			John Doe		101  		2024-01-10
+1			John Doe		102			2024-01-15
+2			Jane Smith      103			2024-02-01
+3			Mike Johnson	NULL		NULL	
+ 
+RIGHT JOIN
+ 
+SELECT  Customers.CustomerID, Customers.CustomerName, Orders.OrderID, Orders.OrderDate
+FROM Customers
+RIGHT JOIN  ON Orders ON  Customers.CustomerID = Orders.CustomerID;
+ 
+Out put of RIGHT JOIN
+ 
+ 
+CustomerID	CustomerName	OrderID		OrderDate
+1			John Doe		101  		2024-01-10
+1			John Doe		102			2024-01-15
+2			Jane Smith      103			2024-02-01
+NULL		NULL		    104			2024-03-15	 	   

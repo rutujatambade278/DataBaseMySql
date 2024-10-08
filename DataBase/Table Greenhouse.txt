@@ -1,0 +1,107 @@
+Table: Greenhouse
+
+Fields:
+greenhouse_id (Primary Key, INT, AUTO_INCREMENT)
+location (VARCHAR, 150)
+size (DECIMAL(5, 2)) – in square meters
+type (VARCHAR, 50) – type of greenhouse (e.g., polyhouse, glasshouse)
+installed_on (DATE)
+Table: ClimateData
+
+Fields:
+climate_id (Primary Key, INT, AUTO_INCREMENT)
+greenhouse_id (Foreign Key, INT, REFERENCES Greenhouse(greenhouse_id))
+temperature (DECIMAL(4, 2)) – in °C
+humidity (DECIMAL(4, 2)) – in percentage
+co2_level (DECIMAL(5, 2)) – in ppm (parts per million)
+recorded_at (TIMESTAMP)
+Table: PlantSpecies
+
+Fields:
+species_id (Primary Key, INT, AUTO_INCREMENT)
+species_name (VARCHAR, 100)
+growth_rate (DECIMAL(5, 2)) – growth rate in cm per day
+optimal_temp (DECIMAL(4, 2)) – optimal temperature in °C
+optimal_humidity (DECIMAL(4, 2)) – optimal humidity percentage
+Table: PlantGrowth
+
+Fields:
+growth_id (Primary Key, INT, AUTO_INCREMENT)
+species_id (Foreign Key, INT, REFERENCES PlantSpecies(species_id))
+greenhouse_id (Foreign Key, INT, REFERENCES Greenhouse(greenhouse_id))
+height (DECIMAL(5, 2)) – in cm
+observed_at (DATE)
+Table: WaterUsage
+
+Fields:
+usage_id (Primary Key, INT, AUTO_INCREMENT)
+greenhouse_id (Foreign Key, INT, REFERENCES Greenhouse(greenhouse_id))
+water_used (DECIMAL(5, 2)) – in liters
+usage_date (DATE)
+Table: EnergyConsumption
+
+Fields:
+energy_id (Primary Key, INT, AUTO_INCREMENT)
+greenhouse_id (Foreign Key, INT, REFERENCES Greenhouse(greenhouse_id))
+energy_used (DECIMAL(10, 2)) – in kWh (kilowatt-hours)
+consumption_date (DATE)
+SQL Queries to Create Tables
+sql
+Copy code
+-- Create Greenhouse table
+CREATE TABLE Greenhouse (
+    greenhouse_id INT PRIMARY KEY AUTO_INCREMENT,
+    location VARCHAR(150) NOT NULL,
+    size DECIMAL(5, 2) NOT NULL,
+    type VARCHAR(50),
+    installed_on DATE
+);
+
+-- Create ClimateData table
+CREATE TABLE ClimateData (
+    climate_id INT PRIMARY KEY AUTO_INCREMENT,
+    greenhouse_id INT,
+    temperature DECIMAL(4, 2),
+    humidity DECIMAL(4, 2),
+    co2_level DECIMAL(5, 2),
+    recorded_at TIMESTAMP,
+    FOREIGN KEY (greenhouse_id) REFERENCES Greenhouse(greenhouse_id)
+);
+
+-- Create PlantSpecies table
+CREATE TABLE PlantSpecies (
+    species_id INT PRIMARY KEY AUTO_INCREMENT,
+    species_name VARCHAR(100) NOT NULL,
+    growth_rate DECIMAL(5, 2),
+    optimal_temp DECIMAL(4, 2),
+    optimal_humidity DECIMAL(4, 2)
+);
+
+-- Create PlantGrowth table
+CREATE TABLE PlantGrowth (
+    growth_id INT PRIMARY KEY AUTO_INCREMENT,
+    species_id INT,
+    greenhouse_id INT,
+    height DECIMAL(5, 2),
+    observed_at DATE,
+    FOREIGN KEY (species_id) REFERENCES PlantSpecies(species_id),
+    FOREIGN KEY (greenhouse_id) REFERENCES Greenhouse(greenhouse_id)
+);
+
+-- Create WaterUsage table
+CREATE TABLE WaterUsage (
+    usage_id INT PRIMARY KEY AUTO_INCREMENT,
+    greenhouse_id INT,
+    water_used DECIMAL(5, 2),
+    usage_date DATE,
+    FOREIGN KEY (greenhouse_id) REFERENCES Greenhouse(greenhouse_id)
+);
+
+-- Create EnergyConsumption table
+CREATE TABLE EnergyConsumption (
+    energy_id INT PRIMARY KEY AUTO_INCREMENT,
+    greenhouse_id INT,
+    energy_used DECIMAL(10, 2),
+    consumption_date DATE,
+    FOREIGN KEY (greenhouse_id) REFERENCES Greenhouse(greenhouse_id)
+);
